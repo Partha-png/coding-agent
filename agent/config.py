@@ -2,7 +2,9 @@
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 ENV_FILE = Path.home() / ".agents" / "env"
 
 if ENV_FILE.exists():
@@ -11,9 +13,9 @@ if ENV_FILE.exists():
             key, value = line.split("=", 1)
             os.environ.setdefault(key.strip(), value.strip())
 
-BASE_URL = os.environ["BASE_URL"]
-API_KEY = os.environ["API_KEY"]
-MODEL = os.environ.get("MODEL", "deepseek/deepseek-v4-flash")
+BASE_URL = os.environ.get("BASE_URL")
+API_KEY = os.environ.get("API_KEY" )
+MODEL = os.environ.get("MODEL", "openai/gpt-oss-120b:novita")
 
 # How much room the model has, and how we spend it.
 CONTEXT_WINDOW = int(os.environ.get("CONTEXT_WINDOW", 128_000))
