@@ -7,7 +7,7 @@ from .permissions import check
 from .subagent import TASK_SCHEMA, task
 from .skills import read_skill
 from .todos import TODO_SCHEMA, write_todos
-
+from langfuse import observe
 
 def bash(command: str) -> str:
     """Run a shell command and return its combined stdout and stderr."""
@@ -55,7 +55,7 @@ def str_replace(path, old_str, new_str, allow_multi_edit=False):
         f.write(content.replace(old_str, new_str))
     return f"Replaced {count} match(es) in {path}"
 
-
+@observe(as_type="tool", name="tool-execution")
 def execute(tool_call):
     """Run one tool call through the permission layer.
 

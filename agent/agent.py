@@ -10,8 +10,8 @@ from . import sandbox
 from .todos import active_form
 from .tools import execute
 from .ui import ui
-
-
+from langfuse import observe
+@observe(as_type="chain", name="summarization")
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--resume", action="store_true", help="continue the last session")

@@ -1,13 +1,14 @@
 import json
 import os
 
-from openai import OpenAI
+from langfuse.openai import openai
 
 from . import config
 from .skills import skills_prompt
 from .tools import TOOLS, TOOL_SCHEMAS
+from langfuse import observe
 
-client = OpenAI(
+client = openai.OpenAI(
     base_url=config.BASE_URL,
     api_key=config.API_KEY,
 )
@@ -46,7 +47,6 @@ If a skill matches what the user wants, call read_skill first and follow it.
 
 {skills_prompt()}
 """
-
 
 def call_llm(messages, tools=None):
     response = client.chat.completions.create(

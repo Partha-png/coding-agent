@@ -5,7 +5,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
-
+from langfuse import observe
 
 # sandbox.py is inside agent/, so the project root is its parent directory.
 PROJECT = Path(__file__).resolve().parent.parent
@@ -35,7 +35,7 @@ def name():
     """Return the execution backend name."""
     return f"docker-sandbox ({SANDBOX_NAME})"
 
-
+@observe(as_type="span", name="sandbox-run")
 def run(command, timeout=60):
     """Run a shell command inside Docker Sandbox.
 

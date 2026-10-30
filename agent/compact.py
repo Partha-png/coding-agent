@@ -12,7 +12,7 @@ and every trim costs the whole prompt cache.
 from . import config
 from .history import estimate, strip
 from .llm import client
-
+from langfuse import observe
 SYSTEM_PROMPT = """
 You are compacting the transcript of a coding session. The session is out of
 context window. Write the handoff note that lets a fresh agent pick the work up
@@ -75,7 +75,7 @@ def render(messages):
         lines.append(f"{ROLES.get(message['role'], message['role'])}: {content}")
     return "\n\n".join(lines)
 
-
+@observe(as_type="chain", name="summarization")
 def summarize(messages):
     """One LLM call, no tools. Returns the handoff note."""
     response = client.chat.completions.create(
@@ -111,7 +111,7 @@ def tail_start(messages, budget):
             return safe_boundary(messages, index)
     return safe_boundary(messages, 1)
 
-
+@observe(as_type="chain", name="context-compaction")
 def compact(messages):
     """system + summary + a recent tail. The caller freezes what comes back."""
     cut = tail_start(messages, config.CONTEXT_WINDOW * config.COMPACT_TO)

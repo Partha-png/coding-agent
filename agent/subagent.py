@@ -17,7 +17,7 @@ Four rules, and the code below is really just these:
   3. it runs the same loop as the main agent  (nothing special happens here)
   4. only its last message comes back         (the rest is discarded)
 """
-
+from langfuse import observe
 import os
 
 MAX_TURNS = 12  # a runaway explorer is worse than a missing answer
@@ -32,7 +32,7 @@ MAX_TURNS = 12  # a runaway explorer is worse than a missing answer
 # list it is offered, so it cannot call them. The "do not edit files" rule in
 # the prompt below is only asking nicely. To make that one structural too, add
 # write_file and str_replace to this set.
-WITHHELD = {"task", "write_todos", "str_replace", "write"}
+WITHHELD = {"task", "write_todos", "str_replace", "write_file"}
 
 
 SYSTEM_PROMPT = f"""
@@ -69,7 +69,7 @@ def toolset():
 
     return [s for s in TOOL_SCHEMAS if s["function"]["name"] not in WITHHELD]
 
-
+@observe(as_type="function", name="subagent-task")
 def task(description: str) -> str:
     """Run a fresh agent on one question and return only its final answer."""
     # Imported inside the function, not at the top: llm imports tools, and
